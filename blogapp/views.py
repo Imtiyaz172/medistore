@@ -89,6 +89,61 @@ def products(request):
     }
     return render(request, "blogapp/shop.html",context)
 
+def beauty(request):
+    if request.method == "POST":
+        search        = request.POST['tips_name']
+        blogsearch    = models.beauty_care.objects.filter( Status=True, tips_name__icontains = search)
+        if blogsearch:
+            return render(request, "blogapp/beauty.html",{ 'blogsearch' : blogsearch,})
+        else:
+            messages.warning(request, "No records found.Please try another")
+    product     = models.beauty_care.objects.filter(Status=True).all()
+    paginator = Paginator(product, 6) # Show 6 contacts per page
+
+    page = request.GET.get('page')
+    try:
+        product = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        product = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        product = paginator.page(paginator.num_pages)
+    context={
+        'product' : product,
+    }
+    return render(request, "blogapp/beauty.html",context)
+
+
+
+
+def health(request):
+    if request.method == "POST":
+        search        = request.POST['name']
+        blogsearch    = models.health_care.objects.filter( Status=True, name__icontains = search)
+        if blogsearch:
+            return render(request, "blogapp/health.html",{ 'blogsearch' : blogsearch,})
+        else:
+            messages.warning(request, "No records found.Please try another")
+    product     = models.health_care.objects.filter(Status=True).all()
+    paginator = Paginator(product, 6) # Show 6 contacts per page
+
+    page = request.GET.get('page')
+    try:
+        product = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        product = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        product = paginator.page(paginator.num_pages)
+    context={
+        'product' : product,
+    }
+    return render(request, "blogapp/health.html",context)
+
+
+
 
 def product_detail(request, id):
     product     = models.product.objects.filter(id = id, Status=True).first()
@@ -142,6 +197,24 @@ def tips_detail(request, id):
         'tips_detail' : tips_detail,
     }
     return render(request, "blogapp/tipssingle.html",context)
+
+
+def health_detail(request, id):
+    tips_detail     = models.health_care.objects.filter(id = id, Status=True).first()
+    models.health_care.objects.filter(id = id).update(view =F('view') + 1)
+    context={
+        'tips_detail' : tips_detail,
+    }
+    return render(request, "blogapp/healthdetails.html",context)
+
+
+def beauty_detail(request, id):
+    tips_detail     = models.beauty_care.objects.filter(id = id, Status=True).first()
+    models.beauty_care.objects.filter(id = id).update(view =F('view') + 1)
+    context={
+        'tips_detail' : tips_detail,
+    }
+    return render(request, "blogapp/beautydetails.html",context)
 
 
 
