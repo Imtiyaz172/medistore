@@ -215,11 +215,11 @@ class Cart(models.Model):
     product        = models.ForeignKey(product, on_delete=models.CASCADE)
     user_reg            = models.ForeignKey(user_reg, on_delete=models.CASCADE,blank=True)
     quantity       = models.IntegerField()
+    price          = models.IntegerField()
     add_date      = models.DateField(auto_now=True)
     status        = models.BooleanField(default=True)
     def __str__(self):
         return str(self.product)
-
     class Meta:
         verbose_name='Cart'
         verbose_name_plural='Cart'

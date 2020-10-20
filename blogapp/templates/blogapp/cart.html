@@ -39,8 +39,9 @@
                       <td class="product-name">
                         <h2 class="h5 text-black">{{cart.product.name}}</h2>
                       </td>
-                      <td>{{cart.product.new_price}}</td>
+                      <td>{{cart.price }}</td>
                       <td>
+                      {{cart.quantity }}
                         <div class="input-group mb-3" style="max-width: 120px;">
                           <div class="input-group-prepend">
                             <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
@@ -51,10 +52,9 @@
                             <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
                           </div>
                         </div>
-      
                       </td>
-                      <td>{{ tatal_amount|floatformat:"2" }}</td>
-                      <td><a href="#" class="btn btn-primary height-auto btn-sm">X</a></td>
+                      <td>{{cart.quantity }}</td>
+                      <td><a href="/delete/{{ cart.id }}" class="btn btn-primary height-auto btn-sm">X</a></td>
                     </tr>
                   {% endfor %}
                   

@@ -26,7 +26,7 @@
             <p>{{product.indication}}</p>
             
 
-            <p><del>{{product.old_price}}</del>  <strong class="text-primary h4">{{product.new_price}}</strong></p>
+            <p>  <strong class="text-primary h4">{{product.new_price}}</strong></p>
 
             
             <form action="" method="POST">{% csrf_token %}
@@ -36,6 +36,8 @@
                   <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
                 </div> {% endcomment %}
                 
+                <input type="text" class="form-control text-center" name="price" value="{{product.new_price}}" placeholder=""
+                  aria-label="Example text with button addon" aria-describedby="button-addon1" hidden>
                 <input type="text" class="form-control text-center" name="quantity" value="1" placeholder=""
                   aria-label="Example text with button addon" aria-describedby="button-addon1" hidden>
                 {% comment %} <div class="input-group-append">

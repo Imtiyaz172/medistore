@@ -20,15 +20,18 @@ from django.db.models import Sum
 # Create your views here.
 def index(request):
     slider      = models.slider.objects.filter(Status=True).all().order_by("-id")
-    service     = models.service.objects.filter(Status=True).all()
+    service     = models.service.objects.filter(Status=True).order_by("-id")
     top_view    = models.product.objects.filter(Status=True).order_by("view")
     new    = models.product.objects.filter(Status=True).order_by("-id")
+    about_us  = models.about_us.objects.filter(Status=True).all()
 
     context={
         'slider' : slider,
         'service': service,
         'top_view': top_view,
         'new': new,
+        'about_us': about_us,
+
         
     }
     return render(request, "blogapp/index.html",context)
@@ -149,9 +152,10 @@ def product_detail(request, id):
     product     = models.product.objects.filter(id = id, Status=True).first()
     if request.method=="POST":
         quantity      = request.POST['quantity']
+        price      = request.POST['price']
         if request.session.get('id'):
             user_cart = models.Cart.objects.create(
-                user_reg_id = int(request.session['id']), product_id = product.id , quantity = quantity,
+                user_reg_id = int(request.session['id']), product_id = product.id , quantity = quantity,price=price,
             )
             
 
@@ -163,6 +167,12 @@ def product_detail(request, id):
         'product' : product,
     }
     return render(request, "blogapp/single.html",context)
+
+def delete_prod(request,id):
+        models.Cart.objects.filter(id=id).delete()
+        return redirect("/cart")
+
+
 
 def tips(request):
     if request.method == "POST":
@@ -222,11 +232,12 @@ def cart(request):
     if not request.session['id']:
         return redirect('/login/')
     user_cart      = models.Cart.objects.filter(status = True, user_reg_id = request.session['id']).order_by("-id")
-    tatal_amount    = models.Cart.objects.filter(user_reg_id = request.session['id'],status = True).aggregate(total = Sum(F('quantity') * F('new_price')))['total']
+    tatal_amount    = models.Cart.objects.filter(user_reg_id = request.session['id'],status = True).aggregate(total=Sum('price', field="price*quantity") )['total']
     
+    print(tatal_amount)
     context={
     'user_cart'    : user_cart,
-    'tatal_amount'    : tatal_amount,
+    
 }
     
     return render(request, "blogapp/cart.html",context)
@@ -282,3 +293,10 @@ def contact(request):
                 'message': 'success'
             })
     return render(request, 'blogapp/contact.html', {'form': form})
+
+
+
+def logout(request):
+    request.session['email'] = False
+    request.session['id'] = False
+    return redirect("/login/")
